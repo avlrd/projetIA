@@ -1,0 +1,3 @@
+picsellia
+torch
+ultralytics
