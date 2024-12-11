@@ -1,3 +1,4 @@
 picsellia
 torch
 ultralytics
+python-dotenv
