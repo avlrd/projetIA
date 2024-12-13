@@ -1,43 +1,16 @@
 import os
-from picsellia import Client, Project, DatasetVersion
+from picsellia import DatasetVersion
 from picsellia.types.enums import AnnotationFileType
 from picsellia.sdk.asset import MultiAsset
-from dotenv import load_dotenv
 import zipfile
-from datetime import datetime
+import shutil
 
-def log(message: str):
-	print(f"[{datetime.now}] {message}")
+from common.logs import *
 
-def error(message: str, exit: bool):
-	print(f"\033[31m[{datetime.now}] - Error: {message}\033[0m")
-	if exit:
-		print("Exiting")
-		exit(1)
-	else:
-		print("Continuing")
+from data.config import *
 
-
-if not load_dotenv():
-	error("Failed to load .env file", exit=True)
-
-api_token: str = os.getenv("API_TOKEN")
-if not api_token:
-	error("API_TOKEN not found in .env file", exit=True)
-
-project_id = "01936421-2de9-7259-8a28-c059512eb2fb"
-dataset_id = "0193688e-aa8f-7cbe-9396-bec740a262d0"
-path_to_assets = "./assets"
-experiment_name = "Test"
-
-client: Client = Client(
-	api_token=api_token,
-	organization_name="Picsalex-MLOps",
-	host="https://app.picsellia.com"
-)
-
-project: Project = client.get_project_by_id(project_id)
-
+# s'arrêter la pour l'instant
+exit(0)
 
 #########################################################################################################################
 #########################################################################################################################
@@ -52,20 +25,20 @@ new_experiment = project.create_experiment(experiment_name, "Experiment de test 
 new_experiment.attach_dataset("test_dataset", dataset)
 
 assets: MultiAsset = dataset.list_assets()
-assets.download(path_to_assets, use_id=True)
+# assets.download(path_to_assets, use_id=True)
 
-# dl les annotations au format YOLO pour ultralytics
-path_to_annotations = "./annotations"
 path_to_annotation_zip: str = dataset.export_annotation_file(AnnotationFileType.YOLO, "./", use_id=True)
 
 try:
 	if not zipfile.is_zipfile(path_to_annotation_zip):
 		raise Exception(f"The file {path_to_annotation_zip} is not a zip file")
 	with zipfile.ZipFile(path_to_annotation_zip, "r") as zip_ref:
-		os.makedirs("./annotations", exist_ok=True)
-		zip_ref.extractall("./annotations")
-		print(f"Annotations extracted to {os.path.abspath('./annotations')}")
-		os.rmdir(path_to_annotation_zip)
+		os.makedirs(path_to_annotations, exist_ok=True)
+		zip_ref.extractall(path_to_annotations)
+		print(f"Annotations extracted to {os.path.abspath(path_to_annotations)}")
+		# attention les yeux
+		directory_to_remove = os.path.dirname(os.path.dirname(path_to_annotation_zip))
+		shutil.rmtree(directory_to_remove)
 except Exception as e:
 	print(e)
 	exit(1)
@@ -78,6 +51,14 @@ except Exception as e:
     # Vérifier la structure du dataset
 
     # config ultralytics
+
+		# fichier yaml comme suit :
+		# train: path
+		# val: path
+		# test: path
+		#
+		# nc: x (nombre de classes)
+		# names: ['', '', '', ...] # liste des classes
 
 
 # Training du modèle

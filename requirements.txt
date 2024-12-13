@@ -1,4 +1,4 @@
 picsellia
 torch
 ultralytics
-python-dotenv
+python-decouple
