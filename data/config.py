@@ -3,41 +3,42 @@ from decouple import config, UndefinedValueError
 
 from common.logs import *
 
-#################################################################
-# Sets up everything from Picsellia to begin preparing data		#
-#																#
-# Exports:														#
-# - path_to_assets												#
-# - path_to_annotations											#
-# - experiment													#
-#################################################################
+class Config:
+	def __init__(self):
+		try:
+			self.__client: Client = Client(
+				api_token=config("API_TOKEN"),
+				organization_name=config("ORG_NAME"),
+				host=config("HOST")
+			)
 
-try:
-	__client: Client = Client(
-		api_token=config("API_TOKEN"),
-		organization_name=config("ORG_NAME"),
-		host=config("HOST")
-	)
+			self.__project_id: 			str = config("PROJECT_ID")
+			self.__dataset_id: 			str = config("DATASET_ID")
+			self.__experiment_name: 	str = config("EXPERIMENT_NAME")
+			self.__path_to_assets: 		str = config("ASSETS")
+			self.__path_to_annotations: str = config("ANNOTATIONS")
 
-	__project_id: 			str = config("PROJECT_ID")
-	__dataset_id: 			str = config("DATASET_ID")
-	__experiment_name: 		str = config("EXPERIMENT_NAME")
-	path_to_assets: 		str = config("ASSETS")
-	path_to_annotations: 	str = config("ANNOTATIONS")
+			self.__project: Project = self.__client.get_project_by_id(project_id)
 
-	__project: Project = __client.get_project_by_id(__project_id)
+			self.__dataset: DatasetVersion = self.__client.get_dataset_version_by_id(dataset_id)
 
-	dataset: DatasetVersion = __client.get_dataset_version_by_id(__dataset_id)
+			old_experiment: Experiment = self.__project.get_experiment(self.__experiment_name)
+			old_experiment.delete()
+			new_experiment: Experiment = self.__project.create_experiment(self.__experiment_name)
+			new_experiment.attach_dataset("Dataset", self.__dataset)
+			self.__experiment = new_experiment
 
-	__old_experiment: Experiment = __project.get_experiment(__experiment_name)
-	__old_experiment.delete()
-	__new_experiment: Experiment = __project.create_experiment(__experiment_name)
-	__new_experiment.attach_dataset("Dataset", dataset)
-	# Pourquoi faut il spécifier un name lorsqu'on associe un dataset à l'experiment, alors que ce dataset est déjà nommé ?
-	experiment: Experiment = __new_experiment
+		except UndefinedValueError as e:
+			error(e, True)
+		
+		else:
+			log("Config loaded")
+	
+	def get_path_to_annotations(self) -> str:
+		return self.__path_to_annotations
+	
+	def get_path_to_assets(self) -> str:
+		return self.__path_to_assets
 
-except UndefinedValueError as e:
-	error(e, True)
-
-else:
-	log("Config loaded")
+	def get_experiment(self) -> Experiment:
+		return self.__experiment
