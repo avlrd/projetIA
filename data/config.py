@@ -1,15 +1,14 @@
 from picsellia import Client, Project, DatasetVersion, Experiment
 from decouple import config, UndefinedValueError
 
-from common.logs import *
+from common.logs import log, error
 
 class Config:
 	def __init__(self):
 		try:
 			self.__client: Client = Client(
 				api_token=config("API_TOKEN"),
-				organization_name=config("ORG_NAME"),
-				host=config("HOST")
+				organization_name=config("ORG_NAME")
 			)
 
 			self.__project_id: 			str = config("PROJECT_ID")
@@ -18,9 +17,9 @@ class Config:
 			self.__path_to_assets: 		str = config("ASSETS")
 			self.__path_to_annotations: str = config("ANNOTATIONS")
 
-			self.__project: Project = self.__client.get_project_by_id(project_id)
+			self.__project: Project = self.__client.get_project_by_id(self.__project_id)
 
-			self.__dataset: DatasetVersion = self.__client.get_dataset_version_by_id(dataset_id)
+			self.__dataset: DatasetVersion = self.__client.get_dataset_version_by_id(self.__dataset_id)
 
 			old_experiment: Experiment = self.__project.get_experiment(self.__experiment_name)
 			old_experiment.delete()
@@ -33,6 +32,9 @@ class Config:
 		
 		else:
 			log("Config loaded")
+
+	def get_dataset(self) -> DatasetVersion:
+		return self.__dataset
 	
 	def get_path_to_annotations(self) -> str:
 		return self.__path_to_annotations
