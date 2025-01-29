@@ -1,4 +1,5 @@
 import os
+import yaml
 from pathlib import Path
 import shutil
 import zipfile
@@ -39,7 +40,29 @@ def bind_annotations(assets_path, annotations_path):
 				annotation_path = f"{annotations_path}/{asset_id}.txt"
 				if os.path.exists(annotation_path):
 					shutil.move(annotation_path, f"{annotations_path}/{dirname}/{asset_id}.txt")
+		os.remove(f"{annotations_path}/data.yaml")
 	except Exception as e:
 		error(e, True)
 	else:
 		log("Successfully binded annotations")
+
+def config_data(data_path, labels):
+	index: int = 0
+	labels2 = {}
+	for label in labels:
+		labels2[index] = label.name
+		index += 1
+
+	try:
+		yaml.dump({
+			"names": labels2,
+			"path": data_path,
+			"train": "assets/train",
+			"val": "assets/val",
+			"test": "assets/test",
+		}, open(f"{data_path}/data.yaml", "w"), default_flow_style=False)
+		
+	except Exception as e:
+		error(e, True)
+	else:
+		log("Successfully configured data")

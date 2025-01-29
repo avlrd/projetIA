@@ -1,4 +1,7 @@
 picsellia
 torch
+torchvision
+torchaudio
 ultralytics
 python-decouple
+pyyaml

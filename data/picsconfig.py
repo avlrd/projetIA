@@ -3,7 +3,7 @@ from decouple import config, UndefinedValueError
 
 from common.logs import log, error
 
-class Config:
+class PicsConfig:
 	def __init__(self):
 		try:
 			self.__client: Client = Client(
