@@ -14,8 +14,6 @@ class Config:
 			self.__project_id: 			str = config("PROJECT_ID")
 			self.__dataset_id: 			str = config("DATASET_ID")
 			self.__experiment_name: 	str = config("EXPERIMENT_NAME")
-			self.__path_to_assets: 		str = config("ASSETS")
-			self.__path_to_annotations: str = config("ANNOTATIONS")
 
 			self.__project: Project = self.__client.get_project_by_id(self.__project_id)
 
@@ -35,12 +33,6 @@ class Config:
 
 	def get_dataset(self) -> DatasetVersion:
 		return self.__dataset
-	
-	def get_path_to_annotations(self) -> str:
-		return self.__path_to_annotations
-	
-	def get_path_to_assets(self) -> str:
-		return self.__path_to_assets
 
 	def get_experiment(self) -> Experiment:
 		return self.__experiment

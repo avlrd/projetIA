@@ -30,16 +30,16 @@ def download_annotations(dataset: DatasetVersion, path: str):
 	else:
 		log(f"Downloaded annotations to {path}")
 
-def split_annotations(path_to_assets, path_to_annotations): # a verifier
-	for root, dirs, files in os.walk(path_to_assets):
-		for file in files:
-			if file.endswith(".jpg"):
-				annotation_file = file.replace(".jpg", ".txt")
-				annotation_path = os.path.join(root, annotation_file)
+def bind_annotations(assets_path, annotations_path):
+	try:
+		for dirname in ['test', 'train', 'val']:
+			os.makedirs(f"{annotations_path}/{dirname}", exist_ok=True)
+			for asset in os.listdir(f"{assets_path}/{dirname}"):
+				asset_id = os.path.splitext(asset)[0]
+				annotation_path = f"{annotations_path}/{asset_id}.txt"
 				if os.path.exists(annotation_path):
-					annotation_folder = os.path.join(path_to_annotations, os.path.basename(root))
-					os.makedirs(annotation_folder, exist_ok=True)
-					shutil.move(annotation_path, annotation_folder)
-					log(f"Moved {annotation_file} to {annotation_folder}")
-				else:
-					error(f"Annotation file {annotation_file} not found", True)
+					shutil.move(annotation_path, f"{annotations_path}/{dirname}/{asset_id}.txt")
+	except Exception as e:
+		error(e, True)
+	else:
+		log("Successfully binded annotations")
