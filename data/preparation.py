@@ -55,11 +55,11 @@ def config_data(data_path, labels):
 
 	try:
 		yaml.dump({
-			"names": labels2,
 			"path": data_path,
-			"train": "assets/train",
-			"val": "assets/val",
-			"test": "assets/test",
+			"train": "images/train",
+			"val": "images/val",
+			"test": "images/test",
+			"names": labels2
 		}, open(f"{data_path}/data.yaml", "w"), default_flow_style=False)
 		
 	except Exception as e:

@@ -8,8 +8,8 @@ from data.preparation import download_assets, download_annotations, bind_annotat
 if __name__ == "__main__":
 
 	data_path: str = "./.data"
-	assets_path: str = data_path + "/assets"
-	annotations_path: str = data_path + "/annotations"
+	assets_path: str = data_path + "/images"
+	annotations_path: str = data_path + "/labels"
 	train_path: str = "/train"
 	test_path: str = "/test"
 	val_path: str = "/val"
@@ -43,31 +43,16 @@ if __name__ == "__main__":
 	model.train(
 		data=f"{data_path}/data.yaml",
 		epochs=100,
+		patience=10,
 		batch=16,
 		imgsz=640,
-		device="cuda",
+		device="0",
 		workers=8,
 		exist_ok=True,
-		pretrained=True,
 		optimizer="AdamW",
 		seed=42,
-		cos_lr=True,
 		close_mosaic=0,
-		amp=True,
-		lr0=0.001,
-		lrf=0.1,
-		momentum=0.937,
-		weight_decay=0.0005,
-		warmup_epochs=3.0,
-		warmup_momentum=0.8,
-		warmup_bias_lr=0.1,
-		cls=0.5,
-		dfl=1.5,
-		pose=12.0,
-		kobj=2.0,
-		nbs=32,
-		val=True,
-		plots=True
+		lr0=0.001
 	)
 
 # Choisir les augmentations pertinentes et les mettre en place
