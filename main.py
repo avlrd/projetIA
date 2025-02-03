@@ -1,13 +1,14 @@
 from picsellia import Experiment
 from picsellia.sdk.dataset_version import MultiAsset
-from ultralytics import YOLO
+from decouple import config
 
 from data.picsconfig import PicsConfig
 from data.preparation import download_assets, download_annotations, bind_annotations, config_data
+from training.training import start_training
 
 if __name__ == "__main__":
 
-	data_path: str = "./.data"
+	data_path: str = config("DATA_PATH", default="./.data")
 	assets_path: str = data_path + "/images"
 	annotations_path: str = data_path + "/labels"
 	train_path: str = "/train"
@@ -38,22 +39,7 @@ if __name__ == "__main__":
 
 	config_data(data_path, labels)
 
-	model = YOLO("yolo11n.pt")
-
-	model.train(
-		data=f"{data_path}/data.yaml",
-		epochs=100,
-		patience=10,
-		batch=16,
-		imgsz=640,
-		device="0",
-		workers=8,
-		exist_ok=True,
-		optimizer="AdamW",
-		seed=42,
-		close_mosaic=0,
-		lr0=0.001
-	)
+	start_training(data_path)
 
 # Choisir les augmentations pertinentes et les mettre en place
 
