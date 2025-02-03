@@ -1,0 +1,9 @@
+epochs: 100
+patience: 10
+batch: 16
+imgsz: 640
+device: "0"
+workers: 8
+exist_ok: True
+optimizer: "AdamW"
+lr0: 0.001
