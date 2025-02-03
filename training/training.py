@@ -20,13 +20,13 @@ def load_training_config() -> dict:
 		return hpconfig
 
 
-def start_training() -> None:
+def start_training(data_path: str) -> None:
 	model = YOLO("yolo11n.pt")
 
 	hpconfig: dict = load_training_config()
 
 	model.train(
-		data=hpconfig["data"],
+		data=data_path+"/data.yaml",
 		epochs=hpconfig["epochs"],
 		patience=hpconfig["patience"],
 		batch=hpconfig["batch"],

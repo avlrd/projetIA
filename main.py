@@ -1,5 +1,6 @@
 from picsellia import Experiment
 from picsellia.sdk.dataset_version import MultiAsset
+from decouple import config
 
 from data.picsconfig import PicsConfig
 from data.preparation import download_assets, download_annotations, bind_annotations, config_data
@@ -7,7 +8,7 @@ from training.training import start_training
 
 if __name__ == "__main__":
 
-	data_path: str = "./.data"
+	data_path: str = config("DATA_PATH", default="./.data")
 	assets_path: str = data_path + "/images"
 	annotations_path: str = data_path + "/labels"
 	train_path: str = "/train"
@@ -38,7 +39,7 @@ if __name__ == "__main__":
 
 	config_data(data_path, labels)
 
-	start_training()
+	start_training(data_path)
 
 # Choisir les augmentations pertinentes et les mettre en place
 

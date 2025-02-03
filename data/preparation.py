@@ -9,11 +9,11 @@ from picsellia.types.enums import AnnotationFileType
 
 from common.logs import log, error
 
-def download_assets(assets: MultiAsset, path: str):
+def download_assets(assets: MultiAsset, path: str) -> None:
 	assets.download(path, use_id=True)
 	log(f"Downloaded assets to {path}")
 
-def download_annotations(dataset: DatasetVersion, path: str):
+def download_annotations(dataset: DatasetVersion, path: str) -> None:
 	try:
 		path_to_annotation_zip: Path = Path(dataset.export_annotation_file(AnnotationFileType.YOLO, "./", use_id=True))
 
@@ -31,7 +31,7 @@ def download_annotations(dataset: DatasetVersion, path: str):
 	else:
 		log(f"Downloaded annotations to {path}")
 
-def bind_annotations(assets_path, annotations_path):
+def bind_annotations(assets_path, annotations_path) -> None:
 	try:
 		for dirname in ['test', 'train', 'val']:
 			os.makedirs(f"{annotations_path}/{dirname}", exist_ok=True)
@@ -46,7 +46,7 @@ def bind_annotations(assets_path, annotations_path):
 	else:
 		log("Successfully binded annotations")
 
-def config_data(data_path, labels):
+def config_data(data_path, labels) -> None:
 	index: int = 0
 	labels2 = {}
 	for label in labels:

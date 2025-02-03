@@ -1,4 +1,3 @@
-data: # wait for path conig issue
 epochs: 100
 patience: 10
 batch: 16
