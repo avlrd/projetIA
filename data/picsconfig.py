@@ -31,11 +31,9 @@ class PicsConfig:
 		if(self.__project.get_experiment(self.__experiment_name) is not None):
 			old_experiment: Experiment = self.__project.get_experiment(self.__experiment_name)
 			old_experiment.delete()
-			return self.__project.create_experiment(self.__experiment_name)
-		else:
-			experiment: Experiment = self.__project.create_experiment(self.__experiment_name)
-			experiment.attach_dataset(self.__dataset)
-			return experiment
+		experiment: Experiment = self.__project.create_experiment(self.__experiment_name)
+		experiment.attach_dataset(self.__dataset)
+		return experiment
 	
 	def get_model(self) -> Model:
 		return self.__client.get_model_by_id(self.__model_id)
