@@ -1,7 +1,9 @@
 import yaml
 from ultralytics import YOLO
 from decouple import config, UndefinedValueError
+from picsellia import Experiment, Model
 
+from training.PicselliaLogger import PicselliaLogger, save_model
 from common.logs import error, log
 
 def load_training_config() -> dict:
@@ -20,10 +22,17 @@ def load_training_config() -> dict:
 		return hpconfig
 
 
-def start_training(data_path: str) -> None:
-	model = YOLO("yolo11n.pt")
-
+def start_training(data_path: str, experiment: Experiment, picsmodel: Model) -> None:
 	hpconfig: dict = load_training_config()
+
+	model = YOLO(hpconfig["model"])
+
+	logger: PicselliaLogger = PicselliaLogger(experiment)
+
+	model.add_callback("on_train_start", logger.on_train_start)
+	model.add_callback("on_epoch_start", logger.on_epoch_start)
+	model.add_callback("on_epoch_end", logger.on_epoch_end)
+	model.add_callback("on_train_end", logger.on_train_end)
 
 	model.train(
 		data=data_path+"/data.yaml",
@@ -39,3 +48,5 @@ def start_training(data_path: str) -> None:
 		seed=42,
 		close_mosaic=0
 	)
+
+	save_model(experiment, picsmodel, model.trainer)

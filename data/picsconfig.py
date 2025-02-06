@@ -1,4 +1,4 @@
-from picsellia import Client, Project, DatasetVersion, Experiment
+from picsellia import Client, Project, DatasetVersion, Experiment, Model
 from decouple import config, UndefinedValueError
 
 from common.logs import log, error
@@ -13,17 +13,10 @@ class PicsConfig:
 
 			self.__project_id: 			str = config("PROJECT_ID")
 			self.__dataset_id: 			str = config("DATASET_ID")
+			self.__model_id: 			str = config("MODEL_ID")
 			self.__experiment_name: 	str = config("EXPERIMENT_NAME")
 
 			self.__project: Project = self.__client.get_project_by_id(self.__project_id)
-
-			self.__dataset: DatasetVersion = self.__client.get_dataset_version_by_id(self.__dataset_id)
-
-			old_experiment: Experiment = self.__project.get_experiment(self.__experiment_name)
-			old_experiment.delete()
-			new_experiment: Experiment = self.__project.create_experiment(self.__experiment_name)
-			new_experiment.attach_dataset("Dataset", self.__dataset)
-			self.__experiment = new_experiment
 
 		except UndefinedValueError as e:
 			error(e, True)
@@ -32,7 +25,17 @@ class PicsConfig:
 			log("Config loaded")
 
 	def get_dataset(self) -> DatasetVersion:
-		return self.__dataset
+		return self.__client.get_dataset_version_by_id(self.__dataset_id)
 
 	def get_experiment(self) -> Experiment:
-		return self.__experiment
+		if(self.__project.get_experiment(self.__experiment_name) is not None):
+			old_experiment: Experiment = self.__project.get_experiment(self.__experiment_name)
+			old_experiment.delete()
+			return self.__project.create_experiment(self.__experiment_name)
+		else:
+			experiment: Experiment = self.__project.create_experiment(self.__experiment_name)
+			experiment.attach_dataset(self.__dataset)
+			return experiment
+	
+	def get_model(self) -> Model:
+		return self.__client.get_model_by_id(self.__model_id)

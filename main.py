@@ -1,4 +1,4 @@
-from picsellia import Experiment
+from picsellia import Experiment, Model
 from picsellia.sdk.dataset_version import MultiAsset
 from decouple import config
 
@@ -18,6 +18,7 @@ if __name__ == "__main__":
 	config: PicsConfig = PicsConfig()
 
 	experiment: Experiment = config.get_experiment()
+	model: Model = config.get_model()
 
 	train_assets: MultiAsset = None
 	test_assets: MultiAsset = None
@@ -39,20 +40,6 @@ if __name__ == "__main__":
 
 	config_data(data_path, labels)
 
-	start_training(data_path)
-
-# Choisir les augmentations pertinentes et les mettre en place
-
-
-# Générer les métriques tout au long du training , accessibles via des callbacks et les log en temps réel sur Picsellia
-
-
-# Evaluation du modèle
-
-	# best.pt -> évaluer ses perfs avec ultralytics, log les métriques calculées sur Picsellia dans l'exp créée au début
-
-	# Log chaque image du split de test dans l'onglet évaluation pour comparer y_pred et y_true
-
-	# stocker le modèle entrainé dans un model_version
+	start_training(data_path, experiment, model)
 
 	print("\nProgram ended successfully")
