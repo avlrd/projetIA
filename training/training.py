@@ -30,7 +30,6 @@ def start_training(data_path: str, experiment: Experiment, picsmodel: Model) -> 
 	logger: PicselliaLogger = PicselliaLogger(experiment)
 
 	model.add_callback("on_train_start", logger.on_train_start)
-	model.add_callback("on_train_epoch_start", logger.on_train_epoch_start)
 	model.add_callback("on_train_epoch_end", logger.on_train_epoch_end)
 	model.add_callback("on_train_end", logger.on_train_end)
 

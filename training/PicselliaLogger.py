@@ -1,47 +1,43 @@
-import time
 from picsellia import Experiment, Model, ModelVersion
-from picsellia.types.enums import LogType
+from picsellia.types.enums import LogType, InferenceType
 from ultralytics.models.yolo.detect import DetectionTrainer
-from ultralytics.utils.metrics import ConfusionMatrix
 
 class PicselliaLogger():
 	def __init__(self, experiment: Experiment):
 		self.experiment = experiment
-		self.epoch_start_time = None
-		self.epoch_end_time = None
 
 	def on_train_start(self, trainer: DetectionTrainer):
-		self.total_start_time = time.time()
 		self.experiment.log("Model", str(trainer.model), LogType.LINE)
 
-	def on_train_epoch_start(self, trainer: DetectionTrainer):
-		self.epoch_start_time = time.time()
+	#def on_train_epoch_start(self, trainer: DetectionTrainer):
+		
 
 	def on_train_epoch_end(self, trainer: DetectionTrainer):
-		epoch_duration = time.time() - self.epoch_start_time if self.epoch_start_time else 0
-		self.experiment.log("Epoch duration", epoch_duration, LogType.LINE)
+		# Here we log each value of the metrics object after each epoch
+		# and it normally adds the value to the Log which is of type LINE
+		# it should build a graph with the values of the metrics in real time
+		# according to documentation
+		for name, value in trainer.metrics.items():
+			self.experiment.log(name, [value], LogType.LINE)
+		self.experiment.log("Epoch duration", [trainer.epoch_time], LogType.BAR)
+		self.experiment.log("Fitness", [trainer.fitness], LogType.LINE)
+		if trainer.best_fitness is not None:
+			self.experiment.log("Best fitness", trainer.best_fitness, LogType.VALUE)
+		for index, loss_name in enumerate(trainer.loss_names):
+			self.experiment.log(loss_name, [trainer.loss_items[index].item()], LogType.LINE)
+			
 
 	def on_train_end(self, trainer: DetectionTrainer):
-		total_duration = time.time() - self.total_start_time
-		self.experiment.log("Total duration", total_duration, LogType.LINE)
-
-		confmat: ConfusionMatrix = trainer.metrics.get("confusion_matrix")
-
-		test = confmat.matrix
-
-		self.experiment.log("Confusion matrix", test, LogType.LINE)
-		self.experiment.log("Fitness", trainer.metrics.get("fitness"), LogType.LINE)
-		for data in trainer.metrics.get("results_dict"):
-			self.experiment.log(data, trainer.metrics["results_dict"][data], LogType.LINE)
+		print(trainer.metrics)
 
 def save_model(experiment: Experiment, model: Model, trainer: DetectionTrainer):
-	labels: dict = {index: label.name for index, label in enumerate(experiment.get_dataset("initial").list_labels())}
+	labels: dict = {str(index): label.name for index, label in enumerate(experiment.get_dataset("Dataset").list_labels())}
 
 	model_version: ModelVersion = model.create_version(
 		labels=labels,
 		name=experiment.name,
 		framework="pytorch",
-		type="detection",
+		type=InferenceType.OBJECT_DETECTION,
 		description="Model for experiment " + experiment.name
 	)
 
