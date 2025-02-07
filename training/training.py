@@ -30,8 +30,8 @@ def start_training(data_path: str, experiment: Experiment, picsmodel: Model) -> 
 	logger: PicselliaLogger = PicselliaLogger(experiment)
 
 	model.add_callback("on_train_start", logger.on_train_start)
-	model.add_callback("on_epoch_start", logger.on_epoch_start)
-	model.add_callback("on_epoch_end", logger.on_epoch_end)
+	model.add_callback("on_train_epoch_start", logger.on_train_epoch_start)
+	model.add_callback("on_train_epoch_end", logger.on_train_epoch_end)
 	model.add_callback("on_train_end", logger.on_train_end)
 
 	model.train(
@@ -46,7 +46,8 @@ def start_training(data_path: str, experiment: Experiment, picsmodel: Model) -> 
 		optimizer=hpconfig["optimizer"],
 		lr0=hpconfig["lr0"],
 		seed=42,
-		close_mosaic=0
+		close_mosaic=0,
+		cache=hpconfig["cache"]
 	)
 
 	save_model(experiment, picsmodel, model.trainer)

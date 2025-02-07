@@ -32,7 +32,7 @@ class PicsConfig:
 			old_experiment: Experiment = self.__project.get_experiment(self.__experiment_name)
 			old_experiment.delete()
 		experiment: Experiment = self.__project.create_experiment(self.__experiment_name)
-		experiment.attach_dataset(self.__dataset)
+		experiment.attach_dataset("Dataset", self.get_dataset())
 		return experiment
 	
 	def get_model(self) -> Model:
