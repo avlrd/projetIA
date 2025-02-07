@@ -16,8 +16,6 @@ MODEL_ID=
 
 # Path config
 DATA_PATH=
-IMAGES_PATH=images
-LABELS_PATH=labels
 HPCONFIG_FILE_PATH=
 ```
 
@@ -41,8 +39,6 @@ MODEL_ID=
 
 # Path config
 DATA_PATH=
-IMAGES_PATH=images
-LABELS_PATH=labels
 HPCONFIG_FILE_PATH=
 ```
 
