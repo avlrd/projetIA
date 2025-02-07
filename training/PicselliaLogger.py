@@ -1,3 +1,4 @@
+import time
 from picsellia import Experiment, Model, ModelVersion
 from picsellia.types.enums import LogType, InferenceType
 from ultralytics.models.yolo.detect import DetectionTrainer
@@ -35,10 +36,10 @@ def save_model(experiment: Experiment, model: Model, trainer: DetectionTrainer):
 
 	model_version: ModelVersion = model.create_version(
 		labels=labels,
-		name=experiment.name,
+		name=experiment.name + time.strftime("-%Y-%m-%d-%H-%M-%S"),
 		framework="pytorch",
 		type=InferenceType.OBJECT_DETECTION,
-		description="Model for experiment " + experiment.name
+		description="Best model for experiment " + experiment.name
 	)
 
 	model_version.store("model-best", trainer.best)

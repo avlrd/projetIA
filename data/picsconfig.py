@@ -1,4 +1,5 @@
 from picsellia import Client, Project, DatasetVersion, Experiment, Model
+from picsellia.exceptions import ResourceNotFoundError
 from decouple import config, UndefinedValueError
 
 from common.logs import log, error
@@ -28,9 +29,12 @@ class PicsConfig:
 		return self.__client.get_dataset_version_by_id(self.__dataset_id)
 
 	def get_experiment(self) -> Experiment:
-		if(self.__project.get_experiment(self.__experiment_name) is not None):
+		try:
 			old_experiment: Experiment = self.__project.get_experiment(self.__experiment_name)
 			old_experiment.delete()
+		except ResourceNotFoundError:
+			log(f"Could not find existing experiment named {self.__experiment_name}, creating a new one.")
+			pass
 		experiment: Experiment = self.__project.create_experiment(self.__experiment_name)
 		experiment.attach_dataset("Dataset", self.get_dataset())
 		return experiment

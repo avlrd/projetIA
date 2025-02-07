@@ -44,9 +44,9 @@ def start_training(data_path: str, experiment: Experiment, picsmodel: Model) -> 
 		exist_ok=hpconfig["exist_ok"],
 		optimizer=hpconfig["optimizer"],
 		lr0=hpconfig["lr0"],
+		cache=hpconfig["cache"],
 		seed=42,
-		close_mosaic=0,
-		cache=hpconfig["cache"]
+		close_mosaic=0
 	)
 
 	save_model(experiment, picsmodel, model.trainer)
