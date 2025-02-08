@@ -1,3 +1,4 @@
+model: "yolo11n.pt"
 epochs: 100
 patience: 10
 batch: 16
