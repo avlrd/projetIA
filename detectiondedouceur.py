@@ -61,7 +61,7 @@ project_model: Model = config.get_model()
 version: str = ask_for_version(project_model)
 
 model_version: ModelVersion = project_model.get_version(version)
-file: ModelFile = model_version.get_file("model-best")
+file: ModelFile = model_version.get_file("best")
 file.download()
 
 model = YOLO("./best.pt")

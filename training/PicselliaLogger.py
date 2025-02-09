@@ -42,5 +42,7 @@ def save_model(experiment: Experiment, model: Model, trainer: DetectionTrainer):
 		description="Best model for experiment " + experiment.name
 	)
 
-	model_version.store("model-best", trainer.best)
+	model_version.store("best", trainer.best)
+
+	experiment.attach_model_version(model_version)
 	

@@ -25,3 +25,7 @@ runs
 
 *.yaml
 !hpconfig_default.yaml
+
+# Else
+
+notes.md
