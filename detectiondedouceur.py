@@ -62,6 +62,8 @@ version: str = ask_for_version(project_model)
 
 model_version: ModelVersion = project_model.get_version(version)
 file: ModelFile = model_version.get_file("best")
+if os.path.exists("./best.pt"):
+	os.remove("./best.pt")
 file.download()
 
 model = YOLO("./best.pt")
@@ -72,6 +74,7 @@ match mode:
 
 	case "WEBCAM":
 		result = model(0, device="cuda", show=True)
+		sys.exit(0)
 	case _:
 		print("Error: Invalid mode, shouldn't happen")
 		sys.exit(1)

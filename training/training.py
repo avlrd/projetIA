@@ -46,7 +46,13 @@ def start_training(data_path: str, experiment: Experiment, picsmodel: Model) -> 
 		lr0=hpconfig["lr0"],
 		cache=hpconfig["cache"],
 		seed=42,
-		close_mosaic=0
+		close_mosaic=0,
+		cos_lr=hpconfig["cos_lr"],
+		flipud=hpconfig["flipud"],
+		degrees=hpconfig["degrees"],
+		perspective=hpconfig["perspective"],
+		shear=hpconfig["shear"],
+		hsv_h=hpconfig["hsv_h"]
 	)
 
 	save_model(experiment, picsmodel, model.trainer)

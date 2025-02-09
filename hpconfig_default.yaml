@@ -9,3 +9,9 @@ exist_ok: True
 optimizer: "AdamW"
 lr0: 0.001
 cache: False
+cos_lr: False
+flipud: 0.0
+degrees: 0.0
+perspective: 0.0
+shear: 0.0
+hsv_h: 0.015
