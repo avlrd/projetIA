@@ -61,7 +61,10 @@ project_model: Model = config.get_model()
 version: str = ask_for_version(project_model)
 
 model_version: ModelVersion = project_model.get_version(version)
-file: ModelFile = model_version.get_file("best")
+try:
+	file: ModelFile = model_version.get_file("best")
+except:
+	file: ModelFile = model_version.get_file("model-best")
 if os.path.exists("./best.pt"):
 	os.remove("./best.pt")
 file.download()

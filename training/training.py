@@ -1,3 +1,4 @@
+import os
 import yaml
 from ultralytics import YOLO
 from decouple import config, UndefinedValueError
@@ -25,7 +26,12 @@ def load_training_config() -> dict:
 def start_training(data_path: str, experiment: Experiment, picsmodel: Model) -> None:
 	hpconfig: dict = load_training_config()
 
-	model = YOLO(hpconfig["model"])
+	if hpconfig["yolo"]:
+		model = YOLO(hpconfig["model"])
+	else:
+		os.remove("./best.pt")
+		picsmodel.get_version(hpconfig["model"]).get_file("best").download()
+		model = YOLO("best.pt")
 
 	logger: PicselliaLogger = PicselliaLogger(experiment)
 
