@@ -24,6 +24,12 @@ HPCONFIG_FILE_PATH=
 - Configure hyper parameters in a yaml file which path you will need to specify in the .env file
 - Run ```python main.py```
 
+For the inference:
+
+- Start program detectiondedouceur.py
+- Choose mode
+- Choose a model from the list
+
 ### Français
 
 - Créez un fichier .env à la racine du programme (où se trouve le fichier main.py) :
@@ -46,6 +52,12 @@ HPCONFIG_FILE_PATH=
 - Remplissez les variables avec vos tokens Picsellia puis les chemins vers vos ressources
 - Configurez les hyper parametres via un fichier yaml, dont vous préciserez le chemin d'accès dans le fichier .env
 - Exécutez la commande : ```python main.py```
+
+Pour l'inférence :
+
+- Lancez le programme detectiondedouceur.py
+- Choisissez le mode
+- Choisissez le model d'après la liste affichée
 
 ## Authors
 
